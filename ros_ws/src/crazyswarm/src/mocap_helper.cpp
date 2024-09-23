@@ -16,10 +16,14 @@ int main(int argc, char **argv)
 
   ros::Publisher uavPosePub = nl.advertise<geometry_msgs::PoseStamped>("opt_elios_pose", 1);
   ros::Publisher eePosePub = nl.advertise<geometry_msgs::PoseStamped>("opt_ee_pose", 1);
+  ros::Publisher bbp1PosePub = nl.advertise<geometry_msgs::PoseStamped>("opt_bbp1_pose", 1);
+  ros::Publisher bbp2PosePub = nl.advertise<geometry_msgs::PoseStamped>("opt_bbp2_pose", 1);
 
   // get UAV and the ee name
   std::string uavName("elios3"); 
   std::string eeName("elios3_ee"); 
+  std::string bbp1Name("bbp1");
+  std::string bbp2Name("bbp2");
 
   std::string motionCaptureType;
   nl.param<std::string>("motion_capture_type", motionCaptureType, "vicon");
@@ -95,6 +99,34 @@ int main(int argc, char **argv)
           eePoseMsg.pose.orientation.y = rotation.vec()(1);
           eePoseMsg.pose.orientation.z = rotation.vec()(2);
           eePosePub.publish(eePoseMsg);
+        }
+        else if (bodyName.compare(bbp1Name) == 0)
+        {
+          geometry_msgs::PoseStamped bbp1PoseMsg;
+          bbp1PoseMsg.header.stamp = ros::Time::now();
+          bbp1PoseMsg.header.frame_id = "world";
+          bbp1PoseMsg.pose.position.x = position(0);
+          bbp1PoseMsg.pose.position.y = position(1);
+          bbp1PoseMsg.pose.position.z = position(2);
+          bbp1PoseMsg.pose.orientation.w = rotation.w();
+          bbp1PoseMsg.pose.orientation.x = rotation.vec()(0);
+          bbp1PoseMsg.pose.orientation.y = rotation.vec()(1);
+          bbp1PoseMsg.pose.orientation.z = rotation.vec()(2);
+          bbp1PosePub.publish(bbp1PoseMsg);
+        }
+        else if (bodyName.compare(bbp2Name) == 0)
+        {
+          geometry_msgs::PoseStamped bbp2PoseMsg;
+          bbp2PoseMsg.header.stamp = ros::Time::now();
+          bbp2PoseMsg.header.frame_id = "world";
+          bbp2PoseMsg.pose.position.x = position(0);
+          bbp2PoseMsg.pose.position.y = position(1);
+          bbp2PoseMsg.pose.position.z = position(2);
+          bbp2PoseMsg.pose.orientation.w = rotation.w();
+          bbp2PoseMsg.pose.orientation.x = rotation.vec()(0);
+          bbp2PoseMsg.pose.orientation.y = rotation.vec()(1);
+          bbp2PoseMsg.pose.orientation.z = rotation.vec()(2);
+          bbp2PosePub.publish(bbp2PoseMsg);
         }
         else{
           std::cout << "I didn't found: " << bodyName << std::endl; 
